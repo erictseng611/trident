@@ -4,6 +4,7 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var minifycss = require('gulp-clean-css');
 var browserSync = require('browser-sync');
+var babel = require('gulp-babel');
 
 gulp.task('browser-sync', function() {
   browserSync({
@@ -26,16 +27,31 @@ gulp.task('styles', function(){
     .pipe(browserSync.reload({stream:true}))
 });
 
-gulp.task('scripts', function(){
-  return gulp.src('nmjs/*.js')
+gulp.task('regscripts', function(){
+  return gulp.src('nmjs/registration/*.js')
     .pipe(concat('index.js'))
     .pipe(uglify())
     .pipe(gulp.dest('js/'))
     .pipe(browserSync.reload({stream:true}))
 });
 
+gulp.task('appscripts', function(){
+  return gulp.src('nmjs/app/*.js')
+    .pipe(concat('app.js'))
+    .pipe(babel({presets: ['env']}))
+    .pipe(gulp.dest('js/'))
+    .pipe(browserSync.reload({stream:true}))
+});
+
+gulp.task('build', function(){
+  return gulp.src('js/app.js')
+    .pipe(uglify())
+    .pipe(gulp.dest('js/'))
+});
+
 gulp.task('default', ['browser-sync'], function(){
   gulp.watch("nmcss/*.css", ['styles']);
-  gulp.watch("nmjs/*.js", ['scripts']);
+  gulp.watch("nmjs/registration/*.js", ['regscripts']);
+  gulp.watch("nmjs/app/*.js", ['appscripts']);
   gulp.watch("*.html", ['bs-reload']);
 });
