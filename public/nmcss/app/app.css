@@ -1,0 +1,30 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+*{
+	box-sizing: border-box;
+}
+
+.margin_centered{
+	margin: 0 auto;
+}
+
+#homeView button {
+	display: block;
+}
+
+section {
+	position: absolute;
+}
+
+.hidden {
+	visibility: hidden;
+}
+
+.view{
+	height: 100%;
+	width: 100%;
+}

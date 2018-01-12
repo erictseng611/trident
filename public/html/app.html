@@ -19,22 +19,29 @@
         <button id="scheduleViewButton">Schedule</button>
     </section>
     <section id="matchView" class="view hidden">
-        <button data-button="viewHome" class=""> Return Home</button>
-        <table id="overallScore" class="margin_centered">
-            <tr>
-                <th>Tritons</th>
-                <th>Eagles</th>
-            </tr>
-            <tr>
-                <td> 0 </td>
-                <td> 0 </td>
-            </tr>
-        </table>
-        <section id="doubles" class="match-view margin_centered">
+        <header>
+            <button data-button="viewHome" class=""> Return Home</button>
+            <table id="overallScore" class="scoreboard margin_centered">
+                <tr>
+                    <th>Tritons</th>
+                    <th>Eagles</th>
+                </tr>
+                <tr>
+                    <td> 0 </td>
+                    <td> 0 </td>
+                </tr>
+            </table>
+        </header>
+        <section id="doubles" class="match-view-event">
             <h2> Doubles </h2>
+            <template id="doubles-view"><div id="doublesData"></div></template>
         </section>
-        <section id="singles" class="match-view hidden margin_centered">
+        <section id="singles" class="match-view-event hidden">
             <h2> Singles </h2>
+            <template id="singles-view"><div id="singlesData"></div></template>
+        </section>
+        <section id="matchInspector" class="match-view-event hidden">
+            <button id="returnFromInspector" class=""> Back </button>
         </section>
         <footer id="eventFooter">
             <button data-button="viewDoubles"> Doubles </button>

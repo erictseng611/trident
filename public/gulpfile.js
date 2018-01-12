@@ -27,6 +27,15 @@ gulp.task('styles', function(){
     .pipe(browserSync.reload({stream:true}))
 });
 
+gulp.task('appstyles', function(){
+  gulp.src(['nmcss/app/*.css'])
+    .pipe(autoprefixer('last 2 versions'))
+    .pipe(concat('app.css'))
+    .pipe(minifycss())
+    .pipe(gulp.dest('css/'))
+    .pipe(browserSync.reload({stream:true}))
+});
+
 gulp.task('regscripts', function(){
   return gulp.src('nmjs/registration/*.js')
     .pipe(concat('index.js'))
@@ -51,6 +60,7 @@ gulp.task('build', function(){
 
 gulp.task('default', ['browser-sync'], function(){
   gulp.watch("nmcss/*.css", ['styles']);
+  gulp.watch("nmcss/app/*.css", ['appstyles']);
   gulp.watch("nmjs/registration/*.js", ['regscripts']);
   gulp.watch("nmjs/app/*.js", ['appscripts']);
   gulp.watch("*.html", ['bs-reload']);
