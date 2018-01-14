@@ -45,46 +45,69 @@ document.addEventListener("DOMContentLoaded", function(event) {
             this.singlesView = document.getElementById('singles');
             this.matchInspector = document.getElementById('matchInspector');
 
+            this.getMatchData();
+
             //add click listeners for 3 views of matches
             this.doublesViewButton.addEventListener('click', () => this.view(this.doublesView));
             this.singlesViewButton.addEventListener('click', () => this.view(this.singlesView));
-            document.querySelector('#returnFromInspector').addEventListener('click', ()=>this.returnToMatches());
-            this.startNewMatch();
-
-            this.scores = document.querySelectorAll('.scoreContainer');
-           	this.scores.forEach(match=>{
-           		match.addEventListener('click', (e)=>{this.viewIndividualMatch(e)});
-           	});
+            document.querySelector('#returnFromInspector').addEventListener('click', () => this.returnToMatches());
         }
+
+        getMatchData(){
+        	var fbdata = firebase.database().ref('currMatch');
+            fbdata.on('value', (snapshot) => {
+            	localStorage.setItem('matchData', JSON.stringify(snapshot.val()));
+                	this.matchData = snapshot.val();
+                	this.renderMatch();
+            });
+
+        }
+
         //hide all views before revealing the passed in section
         view(section) {
-        	this.doublesView.classList.add('hidden');
+            this.doublesView.classList.add('hidden');
             this.singlesView.classList.add('hidden');
             this.matchInspector.classList.add('hidden');
 
             //in the case the user clicks from singles to doubles without returning from the match inspector
             var container = document.querySelector('#individualMatchContainer');
-        	if(container){container.remove()}
+            if (container) { container.remove() }
             section.classList.remove('hidden');
         }
 
-        returnToMatches(){
-        	//first remove the current match that was in the container
-        	var container = document.querySelector('#individualMatchContainer');
-        	container.remove();
-        	this.matchInspector.classList.add('hidden');
+        returnToMatches() {
+            //first remove the current match that was in the container
+            var container = document.querySelector('#individualMatchContainer');
+            container.remove();
+            this.matchInspector.classList.add('hidden');
+        }
+
+        isEmpty(obj) {
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key))
+                    return false;
+            }
+            return true;
         }
 
         // calls initNewMatch for a brand new data set
-        startNewMatch() {
-            this.initBlankMatch();
+        renderMatch() {
 
+        	if(document.querySelector('#doublesData')){
+        		document.querySelector('#doublesData').remove();
+               	document.querySelector('#singlesData').remove();
+        	}
+
+            //else use the returned data from firebase to render the match
             //render doubles
             let doublesData = this.matchData.doubles;
             let t = document.getElementById('doubles-view');
-            let doublesMarkup = doublesData.map(match => 
+            let doublesMarkup = doublesData.map(match =>
                 `<div class="scoreContainer" onclick="" id="${match.position}_doubles" data-match-type="doubles" data-position="${match.position}">
 	                <h3> #${match.position} Doubles</h3>
+	                <div id="setTracker">
+	                	<span class="setTicker">&#x2713;</span><span>set</span><span class="setTicker">&#x2713;</span>
+	                </div>
 	                <table class="scoreboard margin_centered">
 	                    <tr>
 	                        <th>${match.homeName}</th>
@@ -98,14 +121,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	            </div>`).join('');
             t.content.querySelector('#doublesData').innerHTML = doublesMarkup;
             let clonedTemplate = document.importNode(t.content, true);
-			this.doublesView.appendChild(clonedTemplate);
+            this.doublesView.appendChild(clonedTemplate);
 
-			//render singles
-			let singlesData = this.matchData.singles;
+            //render singles
+            let singlesData = this.matchData.singles;
             t = document.getElementById('singles-view');
-            let singlesMarkup = singlesData.map(match => 
+            let singlesMarkup = singlesData.map(match =>
                 `<div class="scoreContainer" onclick="" id="${match.position}_singles" data-match-type="singles" data-position="${match.position}">
 	                <h3> #${match.position} Singles</h3>
+	                <div id="setTracker">
+	                	<span class="setTicker" data-team="home">&#x2713;</span><span>Set</span><span class="setTicker" data-team="away">&#x2713;</span>
+	                </div>
 	                <table class="scoreboard margin_centered">
 	                    <tr>
 	                        <th>${match.homeName}</th>
@@ -119,13 +145,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	            </div>`).join('');
             t.content.querySelector('#singlesData').innerHTML = singlesMarkup;
             clonedTemplate = document.importNode(t.content, true);
-			this.singlesView.appendChild(clonedTemplate);
+            this.singlesView.appendChild(clonedTemplate);
+
+            // add click listeners on all the new scoreboards
+            this.scores = document.querySelectorAll('.scoreContainer');
+            this.scores.forEach(match => {
+                match.addEventListener('click', (e) => { this.viewIndividualMatch(e) });
+            });
         }
 
         initBlankMatch() {
-        	if(localStorage.getItem('matchData')){
-        		localStorage.removeItem('matchData');
-        	}
+            if (localStorage.getItem('matchData')) {
+                localStorage.removeItem('matchData');
+            }
             var gameObject = {
                 "doubles": [{
                         "position": 1,
@@ -187,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                         "position": 3,
                         "homeName": "Tritons",
                         "awayName": "Eagles",
-                       "currSetHomeScore": 0,
+                        "currSetHomeScore": 0,
                         "currSetAwayScore": 0,
                         "set": 1,
                         "homeSet": 0,
@@ -230,48 +262,117 @@ document.addEventListener("DOMContentLoaded", function(event) {
             }
             this.matchData = gameObject;
             localStorage.setItem('matchData', JSON.stringify(gameObject));
+            firebase.database().ref('currMatch/').set(this.matchData);
         }
 
         //view an individual match when a scoreboard is clicked
-        viewIndividualMatch(e){
-        	this.matchInspector.classList.remove('hidden');
-        	var currScoreBoard = e.target;
+        viewIndividualMatch(e) {
+        	var container = document.querySelector('#individualMatchContainer');
+            if(container){
+            	container.remove();
+            }
+            this.matchInspector.classList.remove('hidden');
 
-        	//make sure to use the parent div element in order to get access to data attributes
-        	while(!currScoreBoard.classList.contains('scoreContainer')){
-        		currScoreBoard = currScoreBoard.parentElement;
-        	}
-        	var selectedGameIndex = this.findMatchIndex(currScoreBoard.dataset.matchType, currScoreBoard.dataset.position);
-        	var selectedGame = this.matchData[currScoreBoard.dataset.matchType][selectedGameIndex];
-        	let markup =  `<div class="scoreContainer" id="${selectedGame.position}_doubles" data-match-type="doubles" data-position="${selectedGame.position}">
-	                <h3> #${selectedGame.position} ${currScoreBoard.dataset.matchType}</h3>
-	                <table class="scoreboard margin_centered">
-	                    <tr>
-	                        <th>${selectedGame.homeName}</th>
-	                        <th>${selectedGame.awayName}</th>
-	                    </tr>
-	                    <tr>
-	                        <td> ${selectedGame.currSetHomeScore} </td>
-	                        <td> ${selectedGame.currSetAwayScore} </td>
-	                    </tr>
-	                </table>
+            //make sure to use the parent div element in order to get access to data attributes
+            var currScoreBoard = this.findParentScoreboard(e);
+            var selectedGameIndex = this.findMatchIndex(currScoreBoard.dataset.matchType, currScoreBoard.dataset.position);
+            var game = this.matchData[currScoreBoard.dataset.matchType][selectedGameIndex];
+            let markup = `<div class="scoreContainer" id="${game.position}_${currScoreBoard.dataset.matchType}" data-match-type="${currScoreBoard.dataset.matchType}" data-position="${game.position}">
+	                <h3> #${game.position} ${currScoreBoard.dataset.matchType}</h3>
+	                <div id="setTracker">
+	                	<span class="setTicker" data-team="home">&#x2713;</span><span>set</span><span class="setTicker" data-team="away">&#x2713;</span>
+	                </div>
+	                <div class="editScoreRow">
+	                	<div class="leftEditButtons"> 
+	                		<button data-score="increase" data-team="currSetHomeScore"> Plus </button>
+	                		<button data-score="decrease" data-team="currSetHomeScore"> Minus </button>
+	                	</div>
+	                	<div>
+		                <table class="scoreboard margin_centered">
+		                    <tr>
+		                        <th>${game.homeName}</th>
+		                        <th>${game.awayName}</th>
+		                    </tr>
+		                    <tr>
+		                        <td>${game.currSetHomeScore} <img src="/images/serving.svg" alt="serving icon" class="hidden"> </td>
+		                        <td> ${game.currSetAwayScore} <img src="/images/serving.svg" alt="serving icon" class="hidden"></td>
+		                    </tr>
+		                </table>
+		                </div>
+		                <div class="rightEditButtons"> 
+	                		<button data-score="increase" data-team="currSetAwayScore"> Plus </button>
+	                		<button data-score="decrease" data-team="currSetAwayScore"> Minus </button>
+	                	</div>
+	                </div>
+	            </div>
+	            <div id="changeLog">
+	            	<h1> Change Log </h1>
 	            </div>`;
-	        var el = document.createElement('div');
-	        el.id = "individualMatchContainer";
-	        el.innerHTML = markup;
-	        this.matchInspector.append(el);
+            var el = document.createElement('div');
+            el.id = "individualMatchContainer";
+            el.innerHTML = markup;
+            this.matchInspector.append(el);
+
+            //once the buttons are added to the doc, attach click listeners
+            var increaseButtons = document.querySelectorAll('[data-score="increase"]');
+            var decreaseButtons = document.querySelectorAll('[data-score="decrease"]');
+            increaseButtons.forEach((button) => {
+                button.addEventListener('click', (e) => this.incrementScore(e, 1));
+            });
+            decreaseButtons.forEach((button) => {
+                button.addEventListener('click', (e) => this.incrementScore(e, -1));
+            });
         }
 
-        findMatchIndex(type, position){
-        	var index = 0;
-        	this.matchData[type].forEach(function(scoreboard, i){
-        		if(scoreboard.position == position){
-        			index = i;
-        		}	
-        	});
-        	return index;
+        //finds the match index for easy navigation of the match data
+        findMatchIndex(type, position) {
+            var index = 0;
+            this.matchData[type].forEach(function(scoreboard, i) {
+                if (scoreboard.position == position) {
+                    index = i;
+                }
+            });
+
+            return index;
+        }
+
+        incrementScore(e, i) {
+            //get which team to increase score
+            var team = e.target.dataset.team;
+
+            //find the scoreboard where the info about doubles and position is stored
+            var currScoreBoard = this.findParentScoreboard(e);
+
+            //-1 to fix the data set inconsistency with index
+            this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position-1][team] = this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position-1][team] + i;
+            firebase.database().ref('currMatch').set(this.matchData);
+        }
+
+        toggleServe(scoreboard) {
+            var service = this.matchInspector.getElementsByTagName('img');
+            console.log(service);
+            if (service[0].classList.contains('hidden')) {
+                service[0].classList.remove('hidden');
+                service[1].classList.add('hidden');
+            } else {
+                service[0].classList.add('hidden');
+                service[1].classList.remove('hidden');
+            }
+        }
+
+        //finds the parent score board to make use of its data attributes
+        findParentScoreboard(e) {
+            var currScoreBoard = e.target;
+
+            //make sure to use the parent div element in order to get access to data attributes
+            while (!currScoreBoard.classList.contains('scoreContainer')) {
+                currScoreBoard = currScoreBoard.parentElement;
+            }
+            return currScoreBoard;
         }
     };
 
-    var matchPage = new match();
+    document.getElementById('matchViewButton').addEventListener('click', () => {
+        var newMatch = new match();
+    })
 });

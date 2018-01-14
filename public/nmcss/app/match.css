@@ -1,5 +1,5 @@
 #matchView header{
-	height: 10%;
+	height: 15%;
 }
 
 #matchView footer{
@@ -22,16 +22,17 @@
 
 .match-view-event{
 	width: 100%;
-	max-height: 85%;
+	max-height: 80%;
+	overflow: scroll;
 }
 
-#singles{
-	overflow: scroll;
+.setTicker{
+	margin:0 1.25rem;
 }
 
 .scoreContainer{
 	border: 1px solid black;
-	margin: 1.5rem;
+	margin: 1.5rem auto;
 	padding: 0 1rem 1rem 1rem;
 	text-align: center;
 	max-width: 75%;
@@ -41,8 +42,19 @@
 	border-collapse: collapse;
 }
 
-.scoreboard * {
+.scoreboard td, th{
+	position: relative;
 	border: 1px solid black;
+	padding: .5rem;
+}
+
+.scoreboard td img{
+	border: none;
+	position: absolute;
+	left: -25%;
+	top: 0;
+	width: 50px;
+	height: 50px;
 }
 
 #matchInspector{
@@ -50,3 +62,23 @@
 	background-color: white;
 	z-index: 9999;
 }
+
+.editScoreRow{
+	display: flex;
+	flex-direction: row;
+}
+
+.editScoreRow button{
+	display: block;
+	margin: 0 auto;
+}
+
+.editScoreRow div{
+	flex-grow: 1;
+}
+
+.editScoreRow .scoreboard{
+	flex-grow: 2
+}
+
+
