@@ -38,6 +38,10 @@
 	max-width: 75%;
 }
 
+.scoreContainer h3{
+	margin: .25rem;
+}
+
 .scoreboard{
 	border-collapse: collapse;
 }

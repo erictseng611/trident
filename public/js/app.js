@@ -99,6 +99,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
                 var fbdata = firebase.database().ref('currMatch');
                 fbdata.on('value', function (snapshot) {
+                    if (snapshot.val() == null) {
+                        _this3.initBlankMatch();
+                    }
                     localStorage.setItem('matchData', JSON.stringify(snapshot.val()));
                     _this3.matchData = snapshot.val();
                     _this3.renderMatch();
@@ -145,6 +148,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             value: function renderMatch() {
                 var _this4 = this;
 
+                //if there is old data, remove it first
                 if (document.querySelector('#doublesData')) {
                     document.querySelector('#doublesData').remove();
                     document.querySelector('#singlesData').remove();
@@ -155,11 +159,29 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 var doublesData = this.matchData.doubles;
                 var t = document.getElementById('doubles-view');
                 var doublesMarkup = doublesData.map(function (match) {
-                    return '<div class="scoreContainer" onclick="" id="' + match.position + '_doubles" data-match-type="doubles" data-position="' + match.position + '">\n\t                <h3> #' + match.position + ' Doubles</h3>\n\t                <div id="setTracker">\n\t                \t<span class="setTicker">&#x2713;</span><span>set</span><span class="setTicker">&#x2713;</span>\n\t                </div>\n\t                <table class="scoreboard margin_centered">\n\t                    <tr>\n\t                        <th>' + match.homeName + '</th>\n\t                        <th>' + match.awayName + '</th>\n\t                    </tr>\n\t                    <tr>\n\t                        <td> ' + match.currSetHomeScore + ' </td>\n\t                        <td> ' + match.currSetAwayScore + ' </td>\n\t                    </tr>\n\t                </table>\n\t            </div>';
+                    return '<div class="scoreContainer" onclick="" id="' + match.position + '_doubles" data-match-type="doubles" data-position="' + match.position + '">\n\t                <h3> #' + match.position + ' Doubles</h3>\n\t                <div id="setTracker">\n\t                \t<span class="setTicker">&#x2713;</span><span>Set</span><span class="setTicker">&#x2713;</span>\n\t                </div>\n\t                <table class="scoreboard margin_centered">\n\t                    <tr>\n\t                        <th>' + match.homeName + '</th>\n\t                        <th>' + match.awayName + '</th>\n\t                    </tr>\n\t                    <tr>\n\t                        <td> ' + match.currSetHomeScore + ' </td>\n\t                        <td> ' + match.currSetAwayScore + ' </td>\n\t                    </tr>\n\t                </table>\n\t            </div>';
                 }).join('');
                 t.content.querySelector('#doublesData').innerHTML = doublesMarkup;
                 var clonedTemplate = document.importNode(t.content, true);
                 this.doublesView.appendChild(clonedTemplate);
+
+                //remove all the set tickers that are unneeded
+                var doublesContainer = document.querySelector('#doublesData');
+                var setTickers = doublesContainer.querySelectorAll('.setTicker');
+
+                // if the set is 0, then add a hidden class onto the set tickers
+                // necessary to use tickerIndex because it needs to increment twice when i does
+                var tickerIndex = 0;
+                for (var i = 0; i < 3; i++) {
+                    if (this.matchData.doubles[i].homeSet == 0) {
+                        setTickers[tickerIndex].classList.add('hidden');
+                    }
+                    tickerIndex++;
+                    if (this.matchData.doubles[i].awaySet == 0) {
+                        setTickers[tickerIndex].classList.add('hidden');
+                    }
+                    tickerIndex++;
+                }
 
                 //render singles
                 var singlesData = this.matchData.singles;
@@ -170,6 +192,24 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 t.content.querySelector('#singlesData').innerHTML = singlesMarkup;
                 clonedTemplate = document.importNode(t.content, true);
                 this.singlesView.appendChild(clonedTemplate);
+
+                //remove all the set tickers that are unneeded
+                var singlesContainer = document.querySelector('#singlesData');
+                var setTickers = singlesContainer.querySelectorAll('.setTicker');
+
+                // if the set is 0, then add a hidden class onto the set tickers
+                // necessary to use tickerIndex because it needs to increment twice when i does
+                var tickerIndex = 0;
+                for (var i = 0; i < 3; i++) {
+                    if (this.matchData.singles[i].homeSet == 0) {
+                        setTickers[tickerIndex].classList.add('hidden');
+                    }
+                    tickerIndex++;
+                    if (this.matchData.singles[i].awaySet == 0) {
+                        setTickers[tickerIndex].classList.add('hidden');
+                    }
+                    tickerIndex++;
+                }
 
                 // add click listeners on all the new scoreboards
                 this.scores = document.querySelectorAll('.scoreContainer');
@@ -301,11 +341,21 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 var currScoreBoard = this.findParentScoreboard(e);
                 var selectedGameIndex = this.findMatchIndex(currScoreBoard.dataset.matchType, currScoreBoard.dataset.position);
                 var game = this.matchData[currScoreBoard.dataset.matchType][selectedGameIndex];
-                var markup = '<div class="scoreContainer" id="' + game.position + '_' + currScoreBoard.dataset.matchType + '" data-match-type="' + currScoreBoard.dataset.matchType + '" data-position="' + game.position + '">\n\t                <h3> #' + game.position + ' ' + currScoreBoard.dataset.matchType + '</h3>\n\t                <div id="setTracker">\n\t                \t<span class="setTicker" data-team="home">&#x2713;</span><span>set</span><span class="setTicker" data-team="away">&#x2713;</span>\n\t                </div>\n\t                <div class="editScoreRow">\n\t                \t<div class="leftEditButtons"> \n\t                \t\t<button data-score="increase" data-team="currSetHomeScore"> Plus </button>\n\t                \t\t<button data-score="decrease" data-team="currSetHomeScore"> Minus </button>\n\t                \t</div>\n\t                \t<div>\n\t\t                <table class="scoreboard margin_centered">\n\t\t                    <tr>\n\t\t                        <th>' + game.homeName + '</th>\n\t\t                        <th>' + game.awayName + '</th>\n\t\t                    </tr>\n\t\t                    <tr>\n\t\t                        <td>' + game.currSetHomeScore + ' <img src="/images/serving.svg" alt="serving icon" class="hidden"> </td>\n\t\t                        <td> ' + game.currSetAwayScore + ' <img src="/images/serving.svg" alt="serving icon" class="hidden"></td>\n\t\t                    </tr>\n\t\t                </table>\n\t\t                </div>\n\t\t                <div class="rightEditButtons"> \n\t                \t\t<button data-score="increase" data-team="currSetAwayScore"> Plus </button>\n\t                \t\t<button data-score="decrease" data-team="currSetAwayScore"> Minus </button>\n\t                \t</div>\n\t                </div>\n\t            </div>\n\t            <div id="changeLog">\n\t            \t<h1> Change Log </h1>\n\t            </div>';
+                var markup = '<div class="scoreContainer" id="' + game.position + '_' + currScoreBoard.dataset.matchType + '" data-match-type="' + currScoreBoard.dataset.matchType + '" data-position="' + game.position + '">\n\t                <h3> #' + game.position + ' ' + currScoreBoard.dataset.matchType + '</h3>\n\t                <div id="setTracker">\n\t                \t<span class="setTicker" data-set="home">&#x2713;</span><span>Set</span><span class="setTicker" data-set="away">&#x2713;</span>\n\t                </div>\n\t                <div class="editScoreRow">\n\t                \t<div class="leftEditButtons"> \n\t                \t\t<button data-score="increase" data-team="currSetHomeScore"> Plus </button>\n\t                \t\t<button data-score="decrease" data-team="currSetHomeScore"> Minus </button>\n\t                \t</div>\n\t                \t<div>\n\t\t                <table class="scoreboard margin_centered">\n\t\t                    <tr>\n\t\t                        <th>' + game.homeName + '</th>\n\t\t                        <th>' + game.awayName + '</th>\n\t\t                    </tr>\n\t\t                    <tr>\n\t\t                        <td>' + game.currSetHomeScore + ' <img src="/images/serving.svg" alt="serving icon" class="hidden"> </td>\n\t\t                        <td> ' + game.currSetAwayScore + ' <img src="/images/serving.svg" alt="serving icon" class="hidden"></td>\n\t\t                    </tr>\n\t\t                </table>\n\t\t                </div>\n\t\t                <div class="rightEditButtons"> \n\t                \t\t<button data-score="increase" data-team="currSetAwayScore"> Plus </button>\n\t                \t\t<button data-score="decrease" data-team="currSetAwayScore"> Minus </button>\n\t                \t</div>\n\t                </div>\n\t            </div>\n\t            <div id="changeLog">\n\t            \t<h1> Change Log </h1>\n\t            </div>';
                 var el = document.createElement('div');
                 el.id = "individualMatchContainer";
                 el.innerHTML = markup;
                 this.matchInspector.append(el);
+
+                var setTickers = el.querySelectorAll('.setTicker');
+
+                //needs to remove one from position to align with indexing
+                if (this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position - 1].homeSet == 0) {
+                    setTickers[0].classList.add('hidden');
+                }
+                if (this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position - 1].awaySet == 0) {
+                    setTickers[1].classList.add('hidden');
+                }
 
                 //once the buttons are added to the doc, attach click listeners
                 var increaseButtons = document.querySelectorAll('[data-score="increase"]');
@@ -342,12 +392,38 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 //get which team to increase score
                 var team = e.target.dataset.team;
 
+                var opponent = this.getOpposingPlayerScore(team);
+
                 //find the scoreboard where the info about doubles and position is stored
                 var currScoreBoard = this.findParentScoreboard(e);
 
+                // get the data in short form
+                var matchScore = this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position - 1];
+
                 //-1 to fix the data set inconsistency with index
                 this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position - 1][team] = this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position - 1][team] + i;
+
+                // if a team wins a set by 2
+                if (matchScore[team] >= 6 && matchScore[team] - matchScore[opponent] >= 2 || matchScore[team] == 7 && matchScore[opponent] == 6) {
+                    if (team.includes('Home')) {
+                        this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position - 1].homeSet = 1;
+                    } else {
+                        this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position - 1].awaySet = 1;
+                    }
+                } else if (matchScore[team] == 6 && matchScore[opponent] == 6) {
+                    console.log('tiebreaker mode');
+                }
+
                 firebase.database().ref('currMatch').set(this.matchData);
+            }
+        }, {
+            key: 'getOpposingPlayerScore',
+            value: function getOpposingPlayerScore(team) {
+                if (team == 'currSetHomeScore') {
+                    return 'currSetAwayScore';
+                } else {
+                    return 'currSetHomeScore';
+                }
             }
         }, {
             key: 'toggleServe',
