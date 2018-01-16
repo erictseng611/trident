@@ -15,22 +15,15 @@
     <section id="homeView" class="view">
         <h1> Tritons </h1>
         <img src="/images/triton.png" alt="triton logo">
-        <button id="matchViewButton">Start Match</button>
-        <button id="scheduleViewButton">Schedule</button>
+        <button id="matchViewButton" class="home-button display_none">Start Match</button>
+        <button id="viewExistingMatch" class="home-button display_none"> View Live Match </button>
+        <button id="scheduleViewButton" class="home-button hidden">Schedule</button>
     </section>
     <section id="matchView" class="view hidden">
         <header>
             <button data-button="viewHome" class=""> Return Home</button>
-            <table id="overallScore" class="scoreboard margin_centered">
-                <tr>
-                    <th>Tritons</th>
-                    <th>Eagles</th>
-                </tr>
-                <tr>
-                    <td> 0 </td>
-                    <td> 0 </td>
-                </tr>
-            </table>
+            <template id="overallScoreboard-temp"><div id="overallScoreboard"></div></template>
+            <button id="resetMatch"> reset </button>
         </header>
         <section id="doubles" class="match-view-event">
             <h2> Doubles </h2>

@@ -2,6 +2,7 @@ html, body {
 	margin: 0;
 	padding: 0;
 	height: 100%;
+	background-color: blue;
 }
 
 *{
@@ -27,4 +28,8 @@ section {
 .view{
 	height: 100%;
 	width: 100%;
+}
+
+#homeView .display_none{
+	display: none;
 }
