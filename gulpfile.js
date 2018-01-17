@@ -5,6 +5,7 @@ var uglify = require('gulp-uglify');
 var minifycss = require('gulp-clean-css');
 var browserSync = require('browser-sync');
 var babel = require('gulp-babel');
+var workbox = require('workbox-build');
 
 gulp.task('browser-sync', function() {
   browserSync({
@@ -16,6 +17,20 @@ gulp.task('browser-sync', function() {
 
 gulp.task('bs-reload', function () {
   browserSync.reload();
+});
+
+gulp.task('generate-sw', () => {
+  return workbox.generateSW({
+    globDirectory: './public',
+    globPatterns: ['**\/*.{html,js,css,png,svg}'],
+    swDest: `./public/sw.js`,
+    clientsClaim: true,
+    skipWaiting: true
+  }).then(() => {
+    console.info('Service worker generation completed.');
+  }).catch((error) => {
+    console.warn('Service worker generation failed: ' + error);
+  });
 });
 
 

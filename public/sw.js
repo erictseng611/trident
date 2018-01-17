@@ -19,6 +19,14 @@ importScripts('workbox-sw.prod.v2.1.2.js');
  */
 const fileManifest = [
   {
+    "url": "build/sw.js",
+    "revision": "4e644bc354fc027b3bca3f6777ef1fa3"
+  },
+  {
+    "url": "build/workbox-sw.prod.v2.1.2.js",
+    "revision": "685d1ceb6b9a9f94aacf71d6aeef8b51"
+  },
+  {
     "url": "css/app.css",
     "revision": "f63fa7701dcdb6b2452f67f5a05e9896"
   },
@@ -28,15 +36,19 @@ const fileManifest = [
   },
   {
     "url": "html/app.html",
-    "revision": "bc4030b91d539fd009bcab69f839cedc"
+    "revision": "0bf48f7ae062b3c8c18b35aa1e53eab9"
   },
   {
     "url": "html/createAccount.html",
-    "revision": "1a44816114e7b489bd00776969eb4d79"
+    "revision": "df7c2e16af1c91b01f3d137d71283d13"
   },
   {
     "url": "images/logo.svg",
     "revision": "85ec8aaa1562e4ff9ed1ca49cee64c19"
+  },
+  {
+    "url": "images/projectTridentLogo.png",
+    "revision": "9ba2a67938c9af997ffc704b03d3c052"
   },
   {
     "url": "images/serving.png",
@@ -52,11 +64,11 @@ const fileManifest = [
   },
   {
     "url": "index.html",
-    "revision": "6d2ba04338b2d622c710dd31006bf8cc"
+    "revision": "93b627260294261794c9889328b47575"
   },
   {
     "url": "js/app.js",
-    "revision": "1c19d340a92a4965e30a140b3bc5e01a"
+    "revision": "8b68d7a4387d3db3122a540cebfc8caa"
   },
   {
     "url": "js/index.js",
@@ -76,7 +88,7 @@ const fileManifest = [
   },
   {
     "url": "nmjs/app/app.js",
-    "revision": "b010abc4a22f986ab04ce7f09f456817"
+    "revision": "6f8558c8a5e03c98e5f4d750015d7e34"
   },
   {
     "url": "nmjs/app/firebase.js",
@@ -89,8 +101,15 @@ const fileManifest = [
   {
     "url": "nmjs/registration/index.js",
     "revision": "de08749cdfdc3954e30c9a4165dc08df"
+  },
+  {
+    "url": "workbox-cli-config.js",
+    "revision": "e8ac151ed9c8dc11db89033150857278"
   }
 ];
 
-const workboxSW = new self.WorkboxSW();
+const workboxSW = new self.WorkboxSW({
+  "skipWaiting": true,
+  "clientsClaim": true
+});
 workboxSW.precache(fileManifest);

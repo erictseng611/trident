@@ -1,0 +1,26 @@
+{
+  "short_name": "Trident",
+  "name": "Project Trident",
+  "icons": [
+    {
+      "src": "/images/projectTridentLogo.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "/images/projectTridentLogo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/images/projectTridentLogo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/index.html",
+  "background_color": "#559cbe",
+  "theme_color": "#559cbe",
+  "display": "standalone",
+  "orientation": "portrait"
+}

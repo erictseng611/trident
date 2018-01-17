@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -7,17 +7,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
     <link rel="stylesheet" type="text/css" href="/css/app.css">
+    <link rel="shortcut icon" href="/images/logo.svg" type="image/x-icon" />
+    <link rel="manifest" href="/manifest.json">
 </head>
 
 <body>
     <section id="homeView" class="view">
         <h1> Tritons </h1>
+        <button id="signOut"> sign out </button>
         <img src="/images/triton.png" alt="triton logo">
-        <button id="matchViewButton" class="home-button display_none">Start Match</button>
-        <button id="viewExistingMatch" class="home-button display_none"> View Live Match </button>
-        <button id="scheduleViewButton" class="home-button hidden">Schedule</button>
+        <button id="matchViewButton" class="home-button"> View Live Match </button>
+        <button id="scheduleViewButton" class="home-button">Schedule</button>
     </section>
     <section id="matchView" class="view hidden">
         <header>

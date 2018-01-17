@@ -21,7 +21,7 @@ document.addEventListener('click', function(e){
 		var pw = inputs['pw'].value;
 
 		//sign in
-		firebase.auth().signInWithEmailAndPassword(emaisl, pw).catch(function(err){
+		firebase.auth().signInWithEmailAndPassword(email, pw).catch(function(err){
 			console.log(err.code, err.message);
 			//renable the login button
 			e.target.disabled = false;

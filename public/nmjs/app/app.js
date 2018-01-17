@@ -17,30 +17,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
             }
 
             this.matchViewButton = document.getElementById('matchViewButton');
-            this.viewExistingMatch = document.getElementById('viewExistingMatch');
             this.scheduleViewButton = document.getElementById('scheduleViewButton');
             this.matchView = document.getElementById('matchView');
             this.scheduleView = document.getElementById('scheduleView');
             this.homeView = document.getElementById('homeView');
 
-            // lazy load buttons determine whether to show view existing match or start new match in home
-            var fbdata = firebase.database().ref('currMatch');
-            fbdata.on('value', (snapshot) => {
-                if (snapshot.val() == null) {
-                    this.matchViewButton.classList.remove('display_none');
-                    this.viewExistingMatch.classList.add('display_none');
-                } else {
-                    this.matchViewButton.classList.add('display_none');
-                    this.viewExistingMatch.classList.remove('display_none');
-                }
-
-                this.scheduleViewButton.classList.remove('hidden');
-            });
-
+            document.querySelector('#signOut').addEventListener('click', this.signOut);
 
 
             this.matchViewButton.addEventListener('click', () => this.view(this.matchView));
-            this.viewExistingMatch.addEventListener('click', () => this.view(this.matchView));
 
             this.scheduleViewButton.addEventListener('click', () => this.view(this.scheduleView));
 
@@ -62,6 +47,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
         view(section) {
             this.hideViews();
             section.classList.remove('hidden');
+        }
+
+        signOut(){
+            localStorage.clear();
+            firebase.auth().signOut();
+            window.location.href = "/";
+
         }
     };
 
@@ -459,7 +451,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
             var matchScore = this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position - 1];
 
             //-1 to fix the data set inconsistency with index
-            this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position - 1][team] = this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position - 1][team] + i;
+            if(0 <= this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position - 1][team] <= 7){
+                this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position - 1][team] = this.matchData[currScoreBoard.dataset.matchType][currScoreBoard.dataset.position - 1][team] + i;
+            }
 
             // if a team wins a set by 2 or its 7-6
             if (matchScore[team] >= 6 && (matchScore[team] - matchScore[opponent] >= 2) || (matchScore[team] == 7 && matchScore[opponent] == 6)) {
@@ -531,9 +525,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
     };
 
     document.getElementById('matchViewButton').addEventListener('click', () => {
-        var newMatch = new match();
-    });
-    document.getElementById('viewExistingMatch').addEventListener('click', () => {
         var newMatch = new match();
     });
 });
