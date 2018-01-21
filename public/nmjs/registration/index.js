@@ -23,6 +23,7 @@ document.addEventListener('click', function(e){
 		//sign in
 		firebase.auth().signInWithEmailAndPassword(email, pw).catch(function(err){
 			console.log(err.code, err.message);
+
 			//renable the login button
 			e.target.disabled = false;
 		});
@@ -54,12 +55,15 @@ document.addEventListener('click', function(e){
 		firebase.auth().onAuthStateChanged(function(user){
 			//if the user exists
 			if(user){
+
+				console.log(user, "logged in");
 				//set the team of the user
 
 				//set permissions of the user
 
 				//redirect the window the app's home page
-				window.location.heref = "/html/app.html"
+				window.location.href = "/html/app.html"
+
 
 			}
 		});

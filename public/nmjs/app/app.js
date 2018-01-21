@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('/sw.js').then(registration => {
+                        registration.update();
                         console.log('SW registered: ', registration.scope);
                     }).catch(registrationError => {
                         console.log('SW registration failed: ', registrationError);

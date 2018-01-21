@@ -19,16 +19,8 @@ importScripts('workbox-sw.prod.v2.1.2.js');
  */
 const fileManifest = [
   {
-    "url": "build/sw.js",
-    "revision": "4e644bc354fc027b3bca3f6777ef1fa3"
-  },
-  {
-    "url": "build/workbox-sw.prod.v2.1.2.js",
-    "revision": "685d1ceb6b9a9f94aacf71d6aeef8b51"
-  },
-  {
     "url": "css/app.css",
-    "revision": "f63fa7701dcdb6b2452f67f5a05e9896"
+    "revision": "7daed9d8bfd407988d54f837ec515444"
   },
   {
     "url": "css/login.css",
@@ -36,7 +28,7 @@ const fileManifest = [
   },
   {
     "url": "html/app.html",
-    "revision": "0bf48f7ae062b3c8c18b35aa1e53eab9"
+    "revision": "77707a83b28c48bfe49bad70e0b6b3a7"
   },
   {
     "url": "html/createAccount.html",
@@ -68,11 +60,11 @@ const fileManifest = [
   },
   {
     "url": "js/app.js",
-    "revision": "8b68d7a4387d3db3122a540cebfc8caa"
+    "revision": "2e7613713235d386fca3dd51f519c7f1"
   },
   {
     "url": "js/index.js",
-    "revision": "fbf632542c0295432d27ca03b95ffda8"
+    "revision": "31fdc1764fa202dfeaaf8ce61abe2435"
   },
   {
     "url": "nmcss/app/app.css",
@@ -80,7 +72,7 @@ const fileManifest = [
   },
   {
     "url": "nmcss/app/match.css",
-    "revision": "c8f4942b804c829d02265354b350149d"
+    "revision": "d55990f24534515e7257ece9e5e7fba8"
   },
   {
     "url": "nmcss/login.css",
@@ -88,7 +80,7 @@ const fileManifest = [
   },
   {
     "url": "nmjs/app/app.js",
-    "revision": "6f8558c8a5e03c98e5f4d750015d7e34"
+    "revision": "0de088275c861c5e929a666e0a353009"
   },
   {
     "url": "nmjs/app/firebase.js",
@@ -100,11 +92,11 @@ const fileManifest = [
   },
   {
     "url": "nmjs/registration/index.js",
-    "revision": "de08749cdfdc3954e30c9a4165dc08df"
+    "revision": "52b29ace45d612a580910a13a3853508"
   },
   {
     "url": "workbox-cli-config.js",
-    "revision": "e8ac151ed9c8dc11db89033150857278"
+    "revision": "62f4331fc52eb4b3c2349014b02b7570"
   }
 ];
 
