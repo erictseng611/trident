@@ -35,7 +35,8 @@ gulp.task('generate-sw', () => {
 
 
 gulp.task('styles', function(){
-  gulp.src(['./public/nmcss/*.css'])
+  gulp.start('generate-sw');
+  return gulp.src(['./public/nmcss/*.css'])
     .pipe(autoprefixer('last 2 versions'))
     .pipe(minifycss())
     .pipe(gulp.dest('./public/css/'))
@@ -43,7 +44,8 @@ gulp.task('styles', function(){
 });
 
 gulp.task('appstyles', function(){
-  gulp.src(['./public/nmcss/app/*.css'])
+  gulp.start('generate-sw');
+  return gulp.src(['./public/nmcss/app/*.css'])
     .pipe(autoprefixer('last 2 versions'))
     .pipe(concat('app.css'))
     .pipe(minifycss())
@@ -52,6 +54,7 @@ gulp.task('appstyles', function(){
 });
 
 gulp.task('regscripts', function(){
+  gulp.start('generate-sw');
   return gulp.src('./public/nmjs/registration/*.js')
     .pipe(concat('index.js'))
     .pipe(uglify())
@@ -60,6 +63,7 @@ gulp.task('regscripts', function(){
 });
 
 gulp.task('appscripts', function(){
+  gulp.start('generate-sw');
   return gulp.src('./public/nmjs/app/*.js')
     .pipe(concat('app.js'))
     .pipe(babel({presets: ['env']}))

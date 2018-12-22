@@ -1,0 +1,20 @@
+#homeView .display_none{
+	display: none;
+}
+
+#homeView{
+	background-image:
+    radial-gradient(
+      circle at top left,
+      blue,
+      #5691c8
+    );
+}
+
+#homeView header{
+	display: block;
+}
+
+#teamName {
+	text-align: center;
+}

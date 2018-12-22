@@ -20,7 +20,7 @@ importScripts('workbox-sw.prod.v2.1.2.js');
 const fileManifest = [
   {
     "url": "css/app.css",
-    "revision": "7daed9d8bfd407988d54f837ec515444"
+    "revision": "efee7219990cd4a873e6a89ce83a47b5"
   },
   {
     "url": "css/login.css",
@@ -28,7 +28,7 @@ const fileManifest = [
   },
   {
     "url": "html/app.html",
-    "revision": "77707a83b28c48bfe49bad70e0b6b3a7"
+    "revision": "144c709e06a0f4dd9f04f87f2eea8c39"
   },
   {
     "url": "html/createAccount.html",
@@ -64,11 +64,15 @@ const fileManifest = [
   },
   {
     "url": "js/index.js",
-    "revision": "31fdc1764fa202dfeaaf8ce61abe2435"
+    "revision": "0e03473abffc0978bd1f5024e26493f8"
   },
   {
     "url": "nmcss/app/app.css",
-    "revision": "dfb3b082073b25fd82277d75b3592f4d"
+    "revision": "72a291fc62585f048b724f16c0a24358"
+  },
+  {
+    "url": "nmcss/app/home.css",
+    "revision": "dcb5a66d6faadd53ff9facf6dad6ab77"
   },
   {
     "url": "nmcss/app/match.css",
